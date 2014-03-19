@@ -590,9 +590,8 @@ END
       $mod_perl == 2 ? ModPerl::Util::exit(0) : $r->exit;
     } else {
       # MSIE won't display a custom 500 response unless it is >512 bytes!
-      if ($ENV{HTTP_USER_AGENT} =~ /MSIE/) {
-        $mess = "<!-- " . (' ' x 513) . " -->\n$mess";
-      }
+      # IE 11 doesn't identify itself as MSIE.  Just pad all messages.
+      $mess = "<!-- " . (' ' x 513) . " -->\n$mess";
       $r->custom_response(500,$mess);
     }
   } else {
@@ -601,6 +600,9 @@ END
         print STDOUT $mess;
     }
     else {
+    	# MSIE won't display a custom 500 response unless it is >512 bytes!
+        # IE 11 doesn't identify itself as MSIE.  Just pad all messages.
+        $mess = "<!-- " . (' ' x 513) . " -->\n$mess";
         print STDOUT "Status: 500\n";
         print STDOUT "Content-type: text/html\n\n";
         print STDOUT $mess;
